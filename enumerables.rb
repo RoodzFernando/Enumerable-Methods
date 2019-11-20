@@ -3,20 +3,42 @@
 module Enumerable
     # my_each
     def my_each
-        for i in 0..self.size-1
+        if block_given?
+            for i in 0...self.size
             yield(self[i])
+            end
+        else
+            self.to_enum
         end
     end
 
     #my_each_with_index 
 
     def my_each_with_index
-        for i in 0..self.size-1 
+        if block_given?
+            for i in 0...self.size 
             yield(self[i],i)
+            end
+        else
+            self.to_enum
         end
     end
 
+    #my_select
+
+    def my_select
+        
+        if self.instance_of?(Array)
+            temp_array = []
+            self.my_each do |item|
+                temp_array << item if yield(item)
+            end
+            temp_array
+        end
+    end
 end
 
 
-[4, 3, 2, 1, 5, 25, 14, 28].my_each_with_index{|n,m| puts "#{m}:#{n}"}
+puts [4, 3, 2, 1, 5, 25, 14, 28].my_select{|n| n < 25}
+
+
