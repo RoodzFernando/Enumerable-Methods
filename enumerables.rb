@@ -53,11 +53,25 @@ module Enumerable
         end
     end
 
+    # my_any?
+
+    def my_any?
+        temp_array = []
+        self.my_each do |item|
+            temp_array << yield(item)
+        end
+        for i in 0...temp_array.size
+             if temp_array[i] == true || temp_array.nil?
+                return  true
+             end
+        end
+    end
+
     
 end
 
 
 # puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
-puts [4, 4, 4].my_all?{|n| n == 4}
+puts [4, 2, 3].my_any?{|n| n == 4}
 
 
