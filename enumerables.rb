@@ -28,42 +28,72 @@ module Enumerable
 
     def my_select
         
-        if self.instance_of?(Array)
+        if block_given?
+            if self.instance_of?(Array)
             temp_array = []
             self.my_each do |item|
                 temp_array << item if yield(item)
             end
             temp_array
+            end
+        else
+            self.to_enum
         end
     end
 
     #my_all?
 
     def my_all?
-        temp_array = []
-        self.my_each do |item|
-            temp_array << yield(item)
-        end
-        for i in 0...temp_array.size
+        if block_given?
+            temp_array = []
+            self.my_each do |item|
+                temp_array << yield(item)
+            end
+            for i in 0...temp_array.size
              if temp_array[i] == true
                 return  true
              else
                 return false
              end
+            end
+        else
+            self.to_enum
         end
     end
 
     # my_any?
 
     def my_any?
-        temp_array = []
+        if block_given?
+            temp_array = []
+            self.my_each do |item|
+                temp_array << yield(item)
+            end
+            for i in 0...temp_array.size
+                if temp_array[i] == true || temp_array.nil?
+                    return  true
+                end
+            end
+        else
+            return true
+        end
+    end
+
+    #my_none?
+
+    def my_none?
+        if block_given?
+             temp_array = []
         self.my_each do |item|
             temp_array << yield(item)
         end
         for i in 0...temp_array.size
-             if temp_array[i] == true || temp_array.nil?
+             if temp_array[i] == false || temp_array.nil?
                 return  true
              end
+        end
+        else
+            return true
         end
     end
 
@@ -72,6 +102,5 @@ end
 
 
 # puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
-puts [4, 2, 3].my_any?{|n| n == 4}
 
 
