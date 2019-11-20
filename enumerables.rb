@@ -36,9 +36,25 @@ module Enumerable
             temp_array
         end
     end
+
+    #my_all?
+
+    def my_all?
+        temp_array = []
+        self.my_each do |item|
+            temp_array << yield(item)
+        end
+        temp_array.each do |condition|
+            if condition == true
+                return true
+            else
+                return false
+            end
+        end
+    end
 end
 
 
-puts [4, 3, 2, 1, 5, 25, 14, 28].my_select{|n| n < 25}
+puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
 
 
