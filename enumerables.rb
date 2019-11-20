@@ -44,17 +44,20 @@ module Enumerable
         self.my_each do |item|
             temp_array << yield(item)
         end
-        temp_array.each do |condition|
-            if condition == true
-                return true
-            else
+        for i in 0...temp_array.size
+             if temp_array[i] == true
+                return  true
+             else
                 return false
-            end
+             end
         end
     end
+
+    
 end
 
 
-puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
+# puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
+puts [4, 4, 4].my_all?{|n| n == 4}
 
 
