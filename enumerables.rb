@@ -112,10 +112,25 @@ module Enumerable
             count = self.size
         end
     end
+
+    # my_map
+
+    def my_map(&block)
+       if block_given?
+            temp_array = []
+            self.my_each do |item|
+                temp_array << block.call(item)
+            end
+            temp_array
+            else
+            self.to_enum
+        end
+    end
     
 end
 
 
-puts [2, 3, 4, 5].my_count
+# puts [2, 3, 4, 5].my_map { |n| n * 2 }
+puts [2, 3, 4, 5].my_map
 
 
