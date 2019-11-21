@@ -126,11 +126,34 @@ module Enumerable
             self.to_enum
         end
     end
+
+    # my_inject
+
+    def my_inject(param = nil)
+        if block_given?
+            result = 0
+            temp_array = []
+        if param.nil?
+            i = 0
+            self.my_each_with_index do |elem, index|
+                result = yield( result, self[index])
+            end
+            return result
+        else
+            i = param
+            for i in i...self.size do 
+                result = yield(result, self[i])
+            end
+            return result
+        end
+        else
+            puts "No block given"
+        end
+    end
     
 end
 
 
-# puts [2, 3, 4, 5].my_map { |n| n * 2 }
-puts [2, 3, 4, 5].my_map
+puts [2, 3, 4, 5].my_inject(1){|n, p| n + p}
 
 
