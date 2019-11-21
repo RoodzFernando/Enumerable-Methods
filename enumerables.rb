@@ -97,10 +97,25 @@ module Enumerable
         end
     end
 
+    # my_count
+
+    def my_count
+        if block_given?
+            if self.instance_of?(Array)
+            temp_array = []
+            self.my_each do |item|
+                temp_array << item if yield(item)
+            end
+            temp_array.size
+            end
+        else
+            count = self.size
+        end
+    end
     
 end
 
 
-# puts ["hey", "hey", "hey"].my_all?{|n| n.length == 3}
+puts [2, 3, 4, 5].my_count
 
 
