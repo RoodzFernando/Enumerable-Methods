@@ -115,45 +115,63 @@ module Enumerable
 
     # my_map
 
-    def my_map(&block)
-       if block_given?
-            temp_array = []
-            self.my_each do |item|
-                temp_array << block.call(item)
-            end
-            temp_array
-            else
-            self.to_enum
-        end
-    end
+    # def my_map(&block)
+    #    if block_given?
+    #         temp_array = []
+    #         self.my_each do |item|
+    #             temp_array << block.call(item)
+    #         end
+    #         temp_array
+    #         else
+    #         self.to_enum
+    #     end
+    # end
 
     # my_inject
 
     def my_inject(param = nil)
         if block_given?
-            result = 0
-            temp_array = []
         if param.nil?
+            result = self.shift
             i = 0
-            self.my_each_with_index do |elem, index|
-                result = yield( result, self[index])
+            self.my_each_with_index do |_, index|
+                result = yield(result, self[index])
             end
             return result
         else
+            result = 0
             i = param
-            for i in i...self.size do 
-                result = yield(result, self[i])
+            for i in i...self.size do
+              result = yield(result, self[i])
             end
-            return result
         end
         else
-            puts "No block given"
+          puts 'No block given'
         end
+        result
     end
-    
+
+    # mutiply_els
+
+    def multiply_els(arr)
+        arr.my_inject{|n, p| n * p}
+    end
+
+    # modified my_map enumerable
+
+    def my_map(arr, proc=nil)
+        result = []
+
+        i = 0
+        while i < arr.length
+          if block_given?
+             yield(arr[i])
+          else
+            result << proc.call(arr[i])
+          end
+          i += 1
+        end
+        return result
+    end
 end
-
-
-puts [2, 3, 4, 5].my_inject(1){|n, p| n + p}
-
-
+    
