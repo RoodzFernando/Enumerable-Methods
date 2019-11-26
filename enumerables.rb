@@ -56,7 +56,7 @@ module Enumerable
     true
   end
 
-  def my_any?
+  def my_any?(pattern = nil)
     if block_given?
       my_each { |x| return true unless yield x }
     else
@@ -84,36 +84,24 @@ module Enumerable
     end
   end
 
-  def my_count(_args = nil)
+  def my_count(args = nil)
     count = 0
     if block_given?
       my_each { |x| count += 1 if yield x }
-    elsif arg
-      my_each { |x| count += 1 if x == arg }
+    elsif args
+      my_each { |x| count += 1 if x == args }
     else
       my_each { count += 1 }
     end
     count
   end
 
-  def my_inject(initial = nil, sym = nil, &block)
-    unless block_given?
-      return my_inject_sym(initial) if initial.class == Symbol
-      return my_inject_sym(sym, initial) if sym
-
-      raise 'No block nor symbol given'
+  def my_inject(*_item)
+    acc = self[0]
+    self[1..length].each do |x|
+      acc = yield(acc, x)
     end
-    return self[1..length].my_inject(self[0], &block) unless initial
-
-    my_each { |x| initial = block.call(initial, x) }
-    initial
-  end
-
-  def my_inject_sym(sym, initial = nil)
-    return self[1..length].my_inject_sym(sym, self[0]) unless initial
-
-    my_each { |x| initial = initial.send sym, x }
-    initial
+    acc
   end
 
   def multiply_els(arr)
@@ -121,10 +109,15 @@ module Enumerable
   end
 
   def my_map
-    result = []
-    (1..size).each { |n| result << yield(n) } if self.class == Range
-    (1..size).each { |n| result << yield(n) } if self.class != Range
-    result
+    if block_given?
+      result = []
+      (1..size).each { |n| result << yield(n) } if self.class == Range
+      (0...size).each { |n| result << yield(self[n].to_i) } if self.class != Range
+      (0...size).each { |n| result << yield(self[n].to_i) } if self.class == Proc
+      result
+    else
+      to_enum
+    end
   end
 end
 # rubocop:enable ModuleLength
