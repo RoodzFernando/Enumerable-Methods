@@ -41,23 +41,6 @@ module Enumerable
 
   def my_all?(pattern = nil)
     if block_given?
-      my_each { |x| return false unless yield x }
-    else
-      return my_all? { |obj| obj } unless pattern
-
-      if pattern.class == Regexp
-        my_each { |x| return false unless pattern.match?(x) }
-      elsif pattern.class == Class
-        my_each { |x| return false unless x.is_a? pattern }
-      else
-        my_each { |x| return false unless x == pattern }
-      end
-    end
-    true
-  end
-
-  def my_any?(pattern = nil)
-    if block_given?
       my_each { |x| return true unless yield x }
     else
       return my_all? { |obj| obj } unless pattern
@@ -73,14 +56,31 @@ module Enumerable
     false
   end
 
+  def my_any?(pattern = nil)
+    if block_given?
+      my_each { |x| return false unless yield x }
+    else
+      return my_all? { |obj| obj } unless pattern
+
+      if pattern.class == Regexp
+        my_each { |x| return false unless pattern.match?(x) }
+      elsif pattern.class == Class
+        my_each { |x| return false unless x.is_a? pattern }
+      else
+        my_each { |x| return false unless x == pattern }
+      end
+    end
+    true
+  end
+
   def my_none?
     if block_given?
-      !my_any? { |x| yield x }
-    elsif pattern
-      !my_any?(pattern)
-    else
-      my_each { |x| return false if x }
+      my_each do |x|
+        return false if yield(x)
+      end
       true
+    else
+      self
     end
   end
 
