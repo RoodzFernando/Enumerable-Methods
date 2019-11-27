@@ -96,12 +96,27 @@ module Enumerable
     count
   end
 
-  def my_inject(*_item)
-    acc = self[0]
-    self[1..length].each do |x|
-      acc = yield(acc, x)
+  def my_inject(initial = nil, sym = nil)
+    operation_hash = {
+      :+ => proc { |a, b| a + b },
+      :- => proc { |a, b| a - b },
+      :* => proc { |a, b| a * b },
+      :/ => proc { |a, b| a / b },
+      :** => proc { |a, b| a**b }
+    }
+    instance = self
+    instance = instance.clone.to_a
+    if sym.nil? && initial.respond_to?(:to_sym)
+      sym = initial.to_sym
+      initial = nil
     end
-    acc
+    total = initial
+    total = instance.shift if initial.nil?
+    instance.each do |n|
+      total = operation_hash[sym].call(total, n) if initial.nil?
+      total = yield(total, n) if block_given?
+    end
+    total
   end
 
   def multiply_els(arr)
